@@ -1,0 +1,41 @@
+{
+  "name": "practice--react_admin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "webpack-dev-server --mode development",
+    "server": "nodemon --exec babel-node server.js --delay 2"
+  },
+  "dependencies": {
+    "and": "^0.0.3",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "css-loader": "^3.5.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "mongoose": "^5.9.9",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "prop-types": "^15.7.2",
+    "ra-data-json-server": "^3.4.1",
+    "react": "^16.13.1",
+    "react-admin": "^3.4.2",
+    "react-dom": "^16.13.1",
+    "style-loader": "^1.1.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "html-webpack-plugin": "^4.2.0",
+    "nodemon": "^2.0.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-dev-server": "^3.10.3"
+  }
+}
