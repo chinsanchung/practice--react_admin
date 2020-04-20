@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "author": "<chinsanchung@gmail.com>",
   "scripts": {
     "test": "webpack-dev-server --mode development",
     "server": "nodemon --exec babel-node server.js --delay 2"
@@ -37,5 +38,9 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.10.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinsanchung/practice--react_admin.git"
   }
 }
