@@ -1,46 +1,108 @@
 {
   "name": "practice--react_admin",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "init.js",
   "license": "MIT",
-  "author": "<chinsanchung@gmail.com>",
+  "description": "Youtube Clone with Nomad Coder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinsanchung/nomad--youtube_clone.git"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  },
   "scripts": {
-    "test": "webpack-dev-server --mode development",
-    "server": "nodemon --exec babel-node server.js --delay 2"
+    "dev:server": "nodemon --exec babel-node init.js --delay 3",
+    "dev:assets": "set WEBPACK_ENV=development&&webpack -w",
+    "start": "./node_modules/.bin/webpack && node-dev .",
+    "eject": "react-scripts eject",
+    "build": "./node_modules/.bin/webpack -w",
+    "build:osx": "build --mac",
+    "build:linux": "npm run build:linux32 && npm run build:linux64",
+    "build:linux32": "build --linux --ia32",
+    "build:linux64": "build --linux --x64",
+    "build:win": "npm run build:win32 && npm run build:win64",
+    "build:win32": "build --win --ia32",
+    "build:win64": "build --win --x64"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "build": {
+    "productName": "HelloElectron",
+    "appId": "com.electron.hello",
+    "asar": true,
+    "protocols": {
+      "name": "helloElectron",
+      "schemes": [
+        "helloelectron"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "buildResources": "resources/installer/",
+      "output": "dist/",
+      "app": "."
+    }
   },
   "dependencies": {
-    "and": "^0.0.3",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/register": "^7.9.0",
+    "@material-ui/core": "^4.9.11",
+    "babel-loader": "^8.1.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "css-loader": "^3.5.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^3.22.0",
-    "mongoose": "^5.9.9",
+    "html-webpack-plugin": "^4.2.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.10",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "prop-types": "^15.7.2",
+    "path": "^0.12.7",
+    "ra-data-fakerest": "^3.2.2",
     "ra-data-json-server": "^3.4.1",
+    "ra-data-simple-rest": "^3.3.2",
     "react": "^16.13.1",
     "react-admin": "^3.4.2",
+    "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.13.1",
-    "style-loader": "^1.1.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.5",
-    "@babel/preset-react": "^7.9.4",
-    "babel-loader": "^8.1.0",
-    "html-webpack-plugin": "^4.2.0",
-    "nodemon": "^2.0.3",
+    "react-scripts": "^3.4.1",
+    "style-loader": "^1.1.4",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.10.3"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chinsanchung/practice--react_admin.git"
+  "devDependencies": {
+    "node-dev": "^4.0.0",
+    "node-env-run": "^3.0.2",
+    "nodemon": "^2.0.3",
+    "npm-run-all": "^4.1.5"
   }
 }

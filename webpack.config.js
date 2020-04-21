@@ -1,15 +1,21 @@
-// A: 바깥에서는 import 문이 실행이 안됨
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+// const MODE = process.env.WEBPACK_ENV;
+
 module.exports = {
+  entry: "./components/index.js",
   mode: "development",
-  entry: path.resolve(__dirname, "src/index"),
+  devtool: "#sourcemap",
+  stats: {
+    colors: true,
+    reasons: true,
+  },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        include: path.resolve(__dirname, "src"),
+        exclude: /(node_modules|bower_components)/,
         use: {
           loader: "babel-loader",
           options: {
@@ -17,19 +23,19 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
-  devServer: {
-    contentBase: path.resolve(__dirname, "dist"),
+  plugins: [new HtmlWebpackPlugin({ template: "public/index.html" })],
+  node: {
+    fs: "empty",
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "public/index.html", //source html
-    }),
-  ],
   output: {
+    path: path.resolve(__dirname, "./build"),
     filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
     publicPath: "/",
   },
 };
