@@ -1,14 +1,15 @@
-const SHOPS = "/shops";
-const SHOP_DETAIL = "/:id";
+const SHOPS = "/Shops";
+const MEMBERS = "/Members";
+const EVENTS = "/Events";
+const ANNOUNCES = "/Announces";
+const ID_URL = "/:id";
 
 const routes = {
   shops: SHOPS,
-  shopDetail: (id) => {
-    if (id) {
-      return `/shops/${id}`;
-    }
-    return SHOP_DETAIL;
-  },
+  members: MEMBERS,
+  events: EVENTS,
+  announces: ANNOUNCES,
+  id_url: ID_URL,
 };
 
 export default routes;
