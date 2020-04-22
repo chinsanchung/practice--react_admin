@@ -19,16 +19,8 @@ function ShopFilter(props) {
 }
 
 function ShopList(props) {
-  useEffect(() => {
-    console.log(props);
-  }, []);
   return (
-    <List
-      title="Shop List"
-      exporter={false}
-      filters={<ShopFilter />}
-      {...props}
-    >
+    <List title="Shop List" exporter={false} {...props}>
       <Datagrid>
         <TextField source="shopType" label="분류" />
         <TextField source="name" label="상점 이름" />
