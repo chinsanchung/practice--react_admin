@@ -11,6 +11,7 @@ import shopRouter from "./router/shopRouter";
 
 const app = express();
 const compiler = webpack(config);
+const router = express.Router();
 
 app.use(
   WebpackDevMiddleware(compiler, {
