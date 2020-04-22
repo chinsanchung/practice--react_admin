@@ -16,6 +16,20 @@
 
 #### 04/22
 
-- [] 가짜 데이터를 몽고의 진짜 데이터로 바꾸기
+- 참고: db를 먼저 만들고, 가데이터를 만들 필요가 없음. 프로바이더가 서버로 보내고 받고 하는 것이 중요.
+- [] 몽구스로 몽고 DB 를 생성, 연결하기 - create
+- [x] Shop 스키마, 모델을 만들기
+	- [] 왜 get_list 로 처음에 불러오는게 느릴까
+- [x] create, get_list, get_one, edit, show, delete 컨트롤러 함수 작성
+      > create 의 url 이 /Shops/create 가 아니라 /Shops 로 해야만 작동함
+- [x] 라우트를 미들웨어로 만들어서 묶기. 기본적으로 '/Shops'를 가지고 있으니, get_list하려면 url을 ""으로 해야 작동함
+- [x] 임의로 몽고에 넣은 데이터를 출력해야함. "Warning: Missing translation for key: "Not Found"" 해결하기
 
-- [] 조회, 생성, 변경, 삭제 작업을 몽고와 연결시켜서 작업하기
+- [x] react-admin 의 클라이언트, 서버를 연결하기
+
+#### 04/23
+
+- [] Members 만들기
+	- [] Members Components
+	- [] Members Router
+	- [] Members Controller
