@@ -1,3 +1,9 @@
+### 실행
+
+1. 우선 `yarn install`로 필요 패키지들을 설치합니다.
+2. `yarn dev:assets`로 구현에 필요한 bundle.js, index.html 을 웹팩으로 생성합니다.
+3. `yarn dev:server`로 localhost:4000 에 페이지를 띄웁니다.
+
 ### 진행사항
 
 #### 04/20
@@ -17,11 +23,9 @@
 #### 04/22
 
 - 참고: db를 먼저 만들고, 가데이터를 만들 필요가 없음. 프로바이더가 서버로 보내고 받고 하는 것이 중요.
-- [] 몽구스로 몽고 DB 를 생성, 연결하기 - create
-- [x] Shop 스키마, 모델을 만들기
-	- [] 왜 get_list 로 처음에 불러오는게 느릴까
-- [x] create, get_list, get_one, edit, show, delete 컨트롤러 함수 작성
-      > create 의 url 이 /Shops/create 가 아니라 /Shops 로 해야만 작동함
+- [x] 몽구스로 몽고 DB 를 생성, 연결하기
+- [x] Shops 스키마, 모델을 만들기 - [] 왜 get_list 로 처음에 불러오는게 느릴까
+- [x] create, get_list, get_one, edit, show, delete 컨트롤러 함수 작성 > create 의 url 이 /Shops/create 가 아니라 /Shops 로 해야만 작동함
 - [x] 라우트를 미들웨어로 만들어서 묶기. 기본적으로 '/Shops'를 가지고 있으니, get_list하려면 url을 ""으로 해야 작동함
 - [x] 임의로 몽고에 넣은 데이터를 출력해야함. "Warning: Missing translation for key: "Not Found"" 해결하기
 
@@ -29,7 +33,12 @@
 
 #### 04/23
 
-- [] Members 만들기
-	- [] Members Components
-	- [] Members Router
-	- [] Members Controller
+- Shops
+	- [x] 검색 기능: 객체 키가 search 가 아니라 q 로 바꿔야했음
+	- [x] 페이지: 20개를 넘어갈 때 페이지 구분, 쿼리 검색이 제대로 되는가?
+	- [x] 업데이트: 에러가 났었는데, Shops.updateOne()을 변수에 넣어 res에 보내주니 해결. 아래는 에러였던 구문
+	- [] 처음 로딩이 느린 이유는? (계속 돌아가고 있음)
+- [x] Members 만들기
+- [x] Events 만들기
+- [x] Announces 만들기
+- [x] 검색에 mongoose 가 지원하는 regex expression 으로 부분검색 허용
