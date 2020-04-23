@@ -8,10 +8,12 @@ import config from "../webpack.config";
 import webpack from "webpack";
 import routes from "./routes";
 import shopRouter from "./router/shopRouter";
+import memberRouter from "./router/memberRouter";
+import eventRouter from "./router/eventRouter";
+import announceRouter from "./router/announceRouter";
 
 const app = express();
 const compiler = webpack(config);
-const router = express.Router();
 
 app.use(
   WebpackDevMiddleware(compiler, {
@@ -25,5 +27,8 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 
 app.use(routes.shops, shopRouter);
+app.use(routes.members, memberRouter);
+app.use(routes.events, eventRouter);
+app.use(routes.announces, announceRouter);
 
 export default app;
