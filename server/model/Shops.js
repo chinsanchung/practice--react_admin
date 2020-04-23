@@ -8,5 +8,5 @@ const ShopSchema = new mongoose.Schema({
   address: String,
 });
 
-const model = mongoose.model("shops", ShopSchema, "shops");
+const model = mongoose.model("Shops", ShopSchema, "Shops");
 export default model;
