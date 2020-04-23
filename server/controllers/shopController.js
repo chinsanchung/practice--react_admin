@@ -1,16 +1,12 @@
-import routes from "../routes";
 import Shops from "../model/Shops";
 import paging from "../../util/paging";
 
 export const GET_LIST = async (req, res) => {
   console.log("shopController - GET_LIST()");
+  // Q: 처음 로딩이 느린 이유는?
   const {
     query: { filter, pagination, sort },
   } = req;
-  // Q: 처음 로딩이 느린 이유는?
-  // const filter = req.body.filter || req.query.filter;
-  // const pagination = req.body.pagination || req.query.pagination;
-  // const sort = req.body.sort || req.query.sort;
 
   const pagination_ob = JSON.parse(pagination);
   const pageIndex = String(pagination_ob[0]);
@@ -25,14 +21,15 @@ export const GET_LIST = async (req, res) => {
   }
 
   try {
-    let paging_result;
     if (filter === "{}") {
       const results = await Shops.find({}).sort(name);
-      paging(res, results, pageIndex, perPage, "shops");
+      paging(res, results, pageIndex, perPage, "Shops");
     } else {
       const results = await Shops.find({
-        name: JSON.parse(filter).serach,
+        name: { $regex: JSON.parse(filter).q, $options: "i" }, // NOTICE: 부분검색
       }).sort(name);
+      console.log(`shopController - GET_LIST FILTER: ${JSON.parse(filter).q}`);
+      paging(res, results, pageIndex, perPage, "Shops");
     }
   } catch (error) {
     console.log(`Error on Shops - GET_LIST(): ${error}`);
@@ -45,8 +42,8 @@ export const GET_ONE = async (req, res) => {
     params: { id },
   } = req;
   try {
-    const shops = await Shops.findById(id);
-    res.json(shops);
+    const result = await Shops.findById(id);
+    res.json(result);
     res.end();
   } catch (error) {
     console.log(`Error on Shops - GET_ONE() : ${error}`);
@@ -60,13 +57,13 @@ export const UPDATE = async (req, res) => {
     body: { shopType, name, description, menuDescription, address },
   } = req;
   try {
-    await Shops.updateOne(
+    const result = await Shops.updateOne(
       { _id: id },
       { $set: { shopType, name, description, menuDescription, address } },
     );
-    console.log("Shops is updated");
-    const shop = Shops.findById(id);
-    res.json(shop);
+
+    console.log(`Shops is updated: ${result}`);
+    res.json(result);
     res.end();
   } catch (error) {
     console.log(`Error on Shops - UPDATE(): ${error}`);
@@ -89,10 +86,11 @@ export const CREATE = async (req, res) => {
     });
     await result.save();
 
+    console.log(`Shop is created: ${result}`);
     res.json(result);
     res.end();
   } catch (error) {
-    console.log(error);
+    console.log(`Error on shopController - CREATE(): ${error}`);
   }
 };
 
@@ -101,8 +99,10 @@ export const DELETE = async (req, res) => {
   const {
     params: { id },
   } = req;
+
   await Shops.remove({ _id: id });
-  console.log("Data Deleted");
+
+  console.log("Shop is deleted");
   res.json(req.params);
   res.end();
 };
