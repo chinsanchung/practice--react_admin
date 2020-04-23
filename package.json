@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "init.js",
   "license": "MIT",
-  "description": "Youtube Clone with Nomad Coder",
+  "description": "Practice with React-Admin, Express, Webpack",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chinsanchung/nomad--youtube_clone.git"
+    "url": "git+https://github.com/chinsanchung/practice--react_admin.git"
   },
   "babel": {
     "presets": [
