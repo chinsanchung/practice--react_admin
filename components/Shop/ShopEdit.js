@@ -2,7 +2,7 @@ import React from "react";
 import { Edit, SimpleForm, TextInput } from "react-admin";
 
 function ShopEditTitle({ record }) {
-  return <span>Shop {record && record.title}</span>;
+  return <span>Shop "{record && record.name}"</span>;
 }
 
 function ShopEdit(props) {
