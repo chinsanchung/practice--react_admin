@@ -7,6 +7,6 @@ const MemberSchema = new Schema({
   email: String,
 });
 
-const model = mongoose.model("members", MemberSchema, "members");
+const model = mongoose.model("Members", MemberSchema, "Members");
 
 export default model;
