@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Filter,
-  TextInput,
+  SearchInput,
   List,
   Datagrid,
   TextField,
@@ -13,14 +13,19 @@ import {
 function ShopFilter(props) {
   return (
     <Filter {...props}>
-      <TextInput label="검색" source="search" alwaysOn />
+      <SearchInput source="q" alwaysOn placeholder="상점 이름" />
     </Filter>
   );
 }
 
 function ShopList(props) {
   return (
-    <List title="Shop List" exporter={false} {...props}>
+    <List
+      title="상점 관리"
+      filters={<ShopFilter />}
+      exporter={false}
+      {...props}
+    >
       <Datagrid>
         <TextField source="shopType" label="분류" />
         <TextField source="name" label="상점 이름" />
