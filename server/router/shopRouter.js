@@ -13,7 +13,7 @@ const shopRouter = express.Router();
 shopRouter.get("", GET_LIST);
 shopRouter.get(`${routes.id_url}/show`, GET_ONE);
 shopRouter.post("", CREATE);
-shopRouter.delete(routes.id_url, DELETE);
 shopRouter.put(routes.id_url, UPDATE);
+shopRouter.delete(routes.id_url, DELETE);
 
 export default shopRouter;
