@@ -1,15 +1,11 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from "react-admin";
-import dotenv from "dotenv";
 
 export default (type, params) => {
-  dotenv.config();
   // called when the user attempts to log in
   if (type === AUTH_LOGIN) {
     const { username, password } = params;
-    if (
-      username == process.env.ADMIN_ID &&
-      password == process.env.ADMIN_PASSWORD
-    ) {
+    // Q: dotenv 로 process.env.ADMIN_ID. ADMIN_PASSWORD 를 불러와야하는데 undefined
+    if (username == "golmok" && password == "golmok123!") {
       localStorage.setItem("username", username);
       return Promise.resolve();
     }
