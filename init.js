@@ -1,6 +1,9 @@
-import "./server/model/Shops";
 import dotenv from "dotenv";
 import app from "./server/app";
+import "./server/model/Shops";
+import "./server/model/Members";
+import "./server/model/Events";
+import "./server/model/Announces";
 import "./server/database";
 
 dotenv.config();
