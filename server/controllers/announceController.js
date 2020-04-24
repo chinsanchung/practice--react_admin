@@ -96,7 +96,7 @@ export const DELETE = async (req, res) => {
     params: { id },
   } = req;
 
-  await Announces.remove({ _id: id });
+  await Announces.findOneAndRemove({ _id: id });
 
   console.log(`Announce is deleted`);
   res.json(req.params);

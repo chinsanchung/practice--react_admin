@@ -11,6 +11,7 @@ import {
   DELETE,
   DELETE_MANY,
 } from "react-admin";
+import { convertFileToBase64 } from "../util/imageUtil";
 
 /**
  * Maps react-admin queries to a simple REST API
@@ -32,7 +33,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
    * @param {Object} params The data request params, depending on the type
    * @returns {Object} { url, options } The HTTP request parameters
    */
-  const convertDataRequestToHTTP = (type, resource, params) => {
+  const convertDataRequestToHTTP = async (type, resource, params) => {
     console.log("DataProvider_RequestToHTTP");
     let url = "";
     const options = {};
@@ -87,11 +88,31 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         console.log(params.data);
         break;
       case CREATE:
-        console.log("DataProvider_Request_CREATE");
-        url = `${apiUrl}/${resource}`;
-        options.method = "POST";
-        options.body = JSON.stringify(params.data);
-        console.log(params.data);
+        {
+          console.log("DataProvider_Request_CREATE");
+          url = `${apiUrl}/${resource}`;
+          options.method = "POST";
+          options.body = JSON.stringify(params.data);
+          // CUSTOM:
+          if (resource === "posts" || params.data.avatar) {
+            let newPictures = {};
+            let formerPictures = {};
+            Object.keys(params.data.avatar).forEach((item) => {
+              item === "rawFile"
+                ? (newPictures = {
+                    ...newPictures,
+                    [item]: params.data.avatar[item],
+                  })
+                : (formerPictures = {
+                    ...formerPictures,
+                    [item]: params.data.avatar[item],
+                  });
+            });
+            console.log("new", newPictures);
+            console.log("former", formerPictures);
+          }
+        }
+
         break;
       case DELETE:
         url = `${apiUrl}/${resource}/${params.id}`;

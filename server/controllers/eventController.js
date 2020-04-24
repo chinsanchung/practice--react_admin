@@ -100,7 +100,7 @@ export const DELETE = async (req, res) => {
     params: { id },
   } = req;
 
-  await Events.remove({ _id: id });
+  await Events.findOneAndDelete({ _id: id });
 
   console.log(`Event is deleted`);
   res.json(req.params);

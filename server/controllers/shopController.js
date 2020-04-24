@@ -26,7 +26,7 @@ export const GET_LIST = async (req, res) => {
       paging(res, results, pageIndex, perPage, "Shops");
     } else {
       const results = await Shops.find({
-        name: { $regex: JSON.parse(filter).q, $options: "i" }, // NOTICE: 부분검색
+        name: { $regex: JSON.parse(filter).q, $options: "i" }, // CUSTOM: 부분검색
       }).sort(name);
       console.log(`shopController - GET_LIST FILTER: ${JSON.parse(filter).q}`);
       paging(res, results, pageIndex, perPage, "Shops");
@@ -100,7 +100,7 @@ export const DELETE = async (req, res) => {
     params: { id },
   } = req;
 
-  await Shops.remove({ _id: id });
+  await Shops.findOneAndDelete({ _id: id });
 
   console.log("Shop is deleted");
   res.json(req.params);

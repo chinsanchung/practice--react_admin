@@ -81,14 +81,19 @@ export const UPDATE = async (req, res) => {
 export const CREATE = async (req, res) => {
   console.log("memberController - CREATE()");
   const {
-    body: { member_id, name, phoneNumber, email },
+    body: { avatar, member_id, name, phoneNumber, email },
   } = req;
 
   try {
-    const result = new Members({ member_id, name, phoneNumber, email });
+    const result = new Members({
+      member_id,
+      name,
+      phoneNumber,
+      email,
+      avatar,
+    });
     await result.save();
 
-    console.log(`Member is created: ${result}`);
     res.json(result);
     res.end();
   } catch (error) {
@@ -102,7 +107,7 @@ export const DELETE = async (req, res) => {
     params: { id },
   } = req;
 
-  await Members.remove({ _id: id });
+  await Members.findOneAndRemove({ _id: id });
 
   console.log("Member is deleted");
   res.json(req.params);

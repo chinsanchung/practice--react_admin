@@ -1,10 +1,25 @@
 import React from "react";
-import { Create, SimpleForm, TextInput } from "react-admin";
+import {
+  Create,
+  SimpleForm,
+  TextInput,
+  ImageInput,
+  ImageField,
+} from "react-admin";
 
 function MemberCreate(props) {
   return (
     <Create {...props}>
       <SimpleForm redirect="list">
+        <ImageInput
+          source="avatar"
+          name="avatar"
+          label="아바타"
+          encType="multipart/form-data"
+          accept="image/*"
+        >
+          <ImageField source="src" title="title" />
+        </ImageInput>
         <TextInput source="member_id" label="아이디" />
         <TextInput source="name" label="회원 이름" />
         <TextInput source="phoneNumber" label="전화번호" />
@@ -15,3 +30,9 @@ function MemberCreate(props) {
 }
 
 export default MemberCreate;
+
+/*
+<ImageInput source="avatar" label="아바타" accept="image/*">
+          <ImageField source="src" title="title" />
+        </ImageInput>
+*/

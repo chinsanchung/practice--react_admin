@@ -7,12 +7,13 @@ import {
   DELETE,
   UPDATE,
 } from "../controllers/memberController";
+import { uploadAvatar } from "../../util/multerFunctions";
 
 const memberRouter = express.Router();
 
 memberRouter.get("", GET_LIST);
 memberRouter.get(`${routes.id_url}/show`, GET_ONE);
-memberRouter.post("", CREATE);
+memberRouter.post("", uploadAvatar, CREATE);
 memberRouter.put(routes.id_url, UPDATE);
 memberRouter.delete(routes.id_url, DELETE);
 

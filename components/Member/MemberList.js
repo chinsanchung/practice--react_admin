@@ -5,6 +5,7 @@ import {
   List,
   Datagrid,
   TextField,
+  ImageField,
   ShowButton,
   EditButton,
   DeleteButton,
@@ -27,6 +28,7 @@ function MemberList(props) {
       {...props}
     >
       <Datagrid>
+        {/* <ImageField source="avatar" label="프로필" /> */}
         <TextField source="member_id" label="아이디" />
         <TextField source="name" label="회원 이름" />
         <TextField source="phoneNumber" label="전화번호" />

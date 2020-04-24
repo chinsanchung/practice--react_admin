@@ -7,6 +7,7 @@ const URL = "mongodb://localhost:27017/golmok";
 // const URL =
 //   "mongodb+srv://moon:mmmm1259@wesavercluster-w2rvc.mongodb.net/test?retryWrites=true&w=majority";
 
+mongoose.set("useFindAndModify", false);
 mongoose.connect(URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
