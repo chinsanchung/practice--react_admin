@@ -11,7 +11,15 @@ import {
   DELETE,
   DELETE_MANY,
 } from "react-admin";
-import { convertFileToBase64 } from "../util/imageUtil";
+// import { convertFileToBase64 } from "../util/imageUtil";
+const convertFileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+
+    reader.readAsDataURL(file.rawFile);
+  });
 
 /**
  * Maps react-admin queries to a simple REST API
@@ -92,25 +100,42 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           console.log("DataProvider_Request_CREATE");
           url = `${apiUrl}/${resource}`;
           options.method = "POST";
-          options.body = JSON.stringify(params.data);
-          // CUSTOM:
-          if (resource === "posts" || params.data.avatar) {
-            let newPictures = {};
-            let formerPictures = {};
-            Object.keys(params.data.avatar).forEach((item) => {
-              item === "rawFile"
-                ? (newPictures = {
-                    ...newPictures,
-                    [item]: params.data.avatar[item],
-                  })
-                : (formerPictures = {
-                    ...formerPictures,
-                    [item]: params.data.avatar[item],
-                  });
+
+          if (params.data.avatar) {
+            const avatar_image = params.data.avatar;
+            const convertedData = await convertFileToBase64(avatar_image);
+
+            console.log(convertedData);
+
+            options.body = JSON.stringify({
+              member_id,
+              name,
+              phoneNumber,
+              email,
+              avatar: convertedData,
+              avatar_type: avatar_image.rawFile.type,
             });
-            console.log("new", newPictures);
-            console.log("former", formerPictures);
+          } else {
+            options.body = JSON.stringify(params.data);
           }
+          // CUSTOM:
+          // if (resource === "posts" || params.data.avatar) {
+          //   let newPictures = {};
+          //   let formerPictures = {};
+          //   Object.keys(params.data.avatar).forEach((item) => {
+          //     item === "rawFile"
+          //       ? (newPictures = {
+          //           ...newPictures,
+          //           [item]: params.data.avatar[item],
+          //         })
+          //       : (formerPictures = {
+          //           ...formerPictures,
+          //           [item]: params.data.avatar[item],
+          //         });
+          //   });
+          //   console.log("new", newPictures);
+          //   console.log("former", formerPictures);
+          // }
         }
 
         break;
@@ -137,7 +162,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     console.log("DataProvider_Response");
     const { headers, json } = response;
     const json_v = JSON.parse(
-      JSON.stringify(json).split('"_id":').join('"id":'),
+      JSON.stringify(json).split('"_id":').join('"id":')
     );
 
     switch (type) {
@@ -151,7 +176,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
       case GET_MANY_REFERENCE:
         if (!headers.has("Content-Range")) {
           throw new Error(
-            "The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?",
+            "The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?"
           );
         }
         return {
@@ -186,8 +211,8 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           httpClient(`${apiUrl}/${resource}/${id}`, {
             method: "PUT",
             body: JSON.stringify(params.data),
-          }),
-        ),
+          })
+        )
       ).then((responses) => ({
         data: responses.map((response) => response.json),
       }));
@@ -198,8 +223,8 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         params.ids.map((id) =>
           httpClient(`${apiUrl}/${resource}/${id}`, {
             method: "DELETE",
-          }),
-        ),
+          })
+        )
       ).then((responses) => ({
         data: responses.map((response) => response.json),
       }));
