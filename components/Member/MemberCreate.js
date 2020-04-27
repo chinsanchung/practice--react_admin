@@ -10,8 +10,20 @@ import {
 function MemberCreate(props) {
   return (
     <Create {...props}>
-      <SimpleForm redirect="list">
-        <ImageInput source="avatar" label="아바타" accept="image/*">
+      <SimpleForm
+        redirect="list"
+        encType="multipart/form-data"
+        action="/uploads/images"
+        method="post"
+      >
+        <ImageInput
+          type="file"
+          id="uploadImage"
+          name="image"
+          source="image"
+          label="아바타"
+          accept="image/*"
+        >
           <ImageField source="src" title="title" />
         </ImageInput>
         <TextInput source="member_id" label="아이디" />
@@ -27,6 +39,6 @@ export default MemberCreate;
 
 /*
 <ImageInput source="avatar" label="아바타" accept="image/*">
-          <ImageField source="src" title="title" />
+          <ImageField source="url" title="title" />
         </ImageInput>
 */

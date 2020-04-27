@@ -11,15 +11,6 @@ import {
   DELETE,
   DELETE_MANY,
 } from "react-admin";
-// import { convertFileToBase64 } from "../util/imageUtil";
-const convertFileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-
-    reader.readAsDataURL(file.rawFile);
-  });
 
 /**
  * Maps react-admin queries to a simple REST API
@@ -35,6 +26,14 @@ const convertFileToBase64 = (file) =>
  * DELETE       => DELETE http://my.api.url/posts/123
  */
 export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
+  const convertFileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+
+      reader.readAsDataURL(file.rawFile);
+    });
   /**
    * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
    * @param {String} resource Name of the resource to fetch, e.g. 'posts'
@@ -47,7 +46,6 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     const options = {};
     switch (type) {
       case GET_LIST: {
-        console.log("DataProvider_Request_GET_LIST");
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
@@ -56,6 +54,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           filter: JSON.stringify(params.filter),
         };
         url = `${apiUrl}/${resource}?${stringify(query)}`;
+
         break;
       }
       case GET_ONE:
@@ -92,53 +91,62 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         console.log("DataProvider_Request_UPDATE");
         url = `${apiUrl}/${resource}/${params.id}`;
         options.method = "PUT";
-        options.body = JSON.stringify(params.data);
+        if (params.data.image) {
+          const convertedImage = await convertFileToBase64(params.data.image);
+          options.body = JSON.stringify({
+            ...params.data,
+            image: { src: convertedImage },
+          });
+        }
+
         console.log(params.data);
         break;
       case CREATE:
-        {
-          console.log("DataProvider_Request_CREATE");
-          url = `${apiUrl}/${resource}`;
-          options.method = "POST";
+        console.log("DataProvider_Request_CREATE");
+        url = `${apiUrl}/${resource}`;
+        options.method = "POST";
+        console.log("params.data: ", params.data);
 
-          if (params.data.avatar) {
-            const avatar_image = params.data.avatar;
-            const convertedData = await convertFileToBase64(avatar_image);
+        if (params.data.image) {
+          const convertedImage = await convertFileToBase64(params.data.image);
+          const convertedString = convertedImage.split(";base64,").pop();
 
-            console.log(convertedData);
-
-            options.body = JSON.stringify({
-              member_id,
-              name,
-              phoneNumber,
-              email,
-              avatar: convertedData,
-              avatar_type: avatar_image.rawFile.type,
-            });
-          } else {
-            options.body = JSON.stringify(params.data);
-          }
-          // CUSTOM:
-          // if (resource === "posts" || params.data.avatar) {
-          //   let newPictures = {};
-          //   let formerPictures = {};
-          //   Object.keys(params.data.avatar).forEach((item) => {
-          //     item === "rawFile"
-          //       ? (newPictures = {
-          //           ...newPictures,
-          //           [item]: params.data.avatar[item],
-          //         })
-          //       : (formerPictures = {
-          //           ...formerPictures,
-          //           [item]: params.data.avatar[item],
-          //         });
-          //   });
-          //   console.log("new", newPictures);
-          //   console.log("former", formerPictures);
-          // }
+          options.body = JSON.stringify({
+            ...params.data,
+            image: { src: convertedImage },
+          });
+        } else if (params.data.file) {
+          const convertedFile = await convertFileToBase64(params.data.file);
+          options.body = JSON.stringify({
+            ...params.data,
+            file_name: params.data.file.rawFile.name,
+            src: convertedFile,
+            file_string: convertedString,
+          });
+        } else {
+          options.body = JSON.stringify(params.data);
         }
 
+        // CUSTOM:
+        /*if (resource === "posts" || params.data.avatar) {
+          let newPictures = {};
+          let formerPictures = {};
+          Object.keys(params.data.avatar).forEach((item) => {
+            item === "rawFile"
+              ? (newPictures = {
+                  ...newPictures,
+                  [item]: params.data.avatar[item],
+                })
+              : (formerPictures = {
+                  ...formerPictures,
+                  [item]: params.data.avatar[item],
+                });
+          });
+          console.log("new", newPictures);
+          console.log("former", formerPictures);
+        }*/
         break;
+
       case DELETE:
         url = `${apiUrl}/${resource}/${params.id}`;
         options.method = "DELETE";
@@ -162,7 +170,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     console.log("DataProvider_Response");
     const { headers, json } = response;
     const json_v = JSON.parse(
-      JSON.stringify(json).split('"_id":').join('"id":')
+      JSON.stringify(json).split('"_id":').join('"id":'),
     );
 
     switch (type) {
@@ -176,7 +184,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
       case GET_MANY_REFERENCE:
         if (!headers.has("Content-Range")) {
           throw new Error(
-            "The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?"
+            "The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?",
           );
         }
         return {
@@ -211,8 +219,8 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           httpClient(`${apiUrl}/${resource}/${id}`, {
             method: "PUT",
             body: JSON.stringify(params.data),
-          })
-        )
+          }),
+        ),
       ).then((responses) => ({
         data: responses.map((response) => response.json),
       }));
@@ -223,18 +231,31 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         params.ids.map((id) =>
           httpClient(`${apiUrl}/${resource}/${id}`, {
             method: "DELETE",
-          })
-        )
+          }),
+        ),
       ).then((responses) => ({
         data: responses.map((response) => response.json),
       }));
     }
 
-    const { url, options } = convertDataRequestToHTTP(type, resource, params);
-
-    return httpClient(url, options).then((response) => {
-      console.log(response);
-      return convertHTTPResponse(response, type, resource, params);
+    // const { url, options } = convertDataRequestToHTTP(type, resource, params);
+    // return httpClient(url, options).then((response) => {
+    //   console.log(response);
+    //   return convertHTTPResponse(response, type, resource, params);
+    // });
+    return new Promise((resolve) => {
+      convertDataRequestToHTTP(type, resource, params)
+        .then(({ url, options }) =>
+          httpClient(url, options).then((response) => {
+            console.log("convertDataRequestToHTTP return: ", response);
+            return resolve(
+              convertHTTPResponse(response, type, resource, params),
+            );
+          }),
+        )
+        .catch((error) =>
+          console.log("convertDataRequestToHTTP error: ", error),
+        );
     });
   };
 };

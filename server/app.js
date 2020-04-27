@@ -22,9 +22,11 @@ app.use(
 );
 app.use(helmet());
 app.use(cookieParser());
+app.use(bodyParser({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
+app.use("/uploads", express.static("uploads"));
 
 app.use(routes.shops, shopRouter);
 app.use(routes.members, memberRouter);

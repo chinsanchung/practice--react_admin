@@ -22,7 +22,7 @@ const addUploadFeature = (requestHandler) => (type, resource, params) => {
       return Promise.all(newAvatar.map(convertFileToBase64))
         .then((base64Pictures) =>
           base64Pictures.map((picture64, index) => ({
-            src: picture64,
+            url: picture64,
             title: `${newAvatar[index].title}`,
           })),
         )

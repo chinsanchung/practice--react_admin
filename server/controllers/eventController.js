@@ -79,12 +79,11 @@ export const UPDATE = async (req, res) => {
 export const CREATE = async (req, res) => {
   console.log("eventController - CREATE()");
   const {
-    body: { title, description },
+    body: { title, description, file_name, src },
   } = req;
 
   try {
-    const result = new Events({ title, description });
-    await result.save();
+    const result = Events.create({ title, description, file_name, src });
 
     console.log(`Event is created: ${result}`);
     res.json(result);

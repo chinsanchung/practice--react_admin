@@ -1,3 +1,6 @@
+import express from "express";
+import path from "path";
+import fs from "fs";
 import Members from "../model/Members";
 import paging from "../../util/paging";
 
@@ -58,19 +61,33 @@ export const GET_ONE = async (req, res) => {
 export const UPDATE = async (req, res) => {
   console.log("memberController - UPDATE()");
   const {
-    params: { id },
-    body: { member_id, name, phoneNumber, email },
+    body: {
+      id,
+      image: { src },
+      member_id,
+      name,
+      phoneNumber,
+      email,
+    },
   } = req;
 
   try {
-    const result = await Members.updateOne(
+    const result = await Members.findOneAndUpdate(
       { _id: id },
       {
-        $set: { member_id, name, phoneNumber, email },
+        member_id,
+        name,
+        phoneNumber,
+        email,
+        src,
       },
     );
 
-    console.log(`Member is updated: ${result}`);
+    console.log(
+      `Member is updated: ${
+        (result.member_id, result.name, result.phoneNumber, result.email)
+      }`,
+    );
     res.json(result);
     res.end();
   } catch (error) {
@@ -81,20 +98,35 @@ export const UPDATE = async (req, res) => {
 export const CREATE = async (req, res) => {
   console.log("memberController - CREATE()");
   const {
-    body: { avatar, member_id, name, phoneNumber, email },
-  } = req;
-
-  try {
-    const result = new Members({
+    body: {
+      image: { src },
       member_id,
       name,
       phoneNumber,
       email,
-      avatar,
-    });
-    await result.save();
+      file_string,
+    },
+  } = req;
 
-    res.json(result);
+  try {
+    console.log("file_string: ", file_string);
+    // FIXME: 이 파일 형식은 지원되지 않습니다.
+    const imagePath = path.join(__dirname, "../../uploads/images");
+    fs.writeFile(`${imagePath}/${member_id}.png`, src, "binary", (error) => {
+      if (error) {
+        console.log("Create imageFile Error: ", error);
+      } else console.log("Created Image file");
+    });
+    // console.log("controller req.body: ", req.body);
+    const newMember = await Members.create({
+      member_id,
+      name,
+      phoneNumber,
+      email,
+      src,
+    });
+
+    res.json(newMember);
     res.end();
   } catch (error) {
     console.log(`Error on memberController - CREATE(): ${error}`);
