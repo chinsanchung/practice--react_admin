@@ -7,7 +7,7 @@ import {
   DELETE,
   UPDATE,
 } from "../controllers/memberController";
-import { uploadAvatar } from "../../util/multerFunctions";
+import { uploadAvatar } from "../middlewares";
 
 const memberRouter = express.Router();
 

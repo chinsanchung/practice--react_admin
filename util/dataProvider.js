@@ -104,17 +104,23 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           if (params.data.avatar) {
             const avatar_image = params.data.avatar;
             const convertedData = await convertFileToBase64(avatar_image);
-
-            console.log(convertedData);
-
-            options.body = JSON.stringify({
-              member_id,
-              name,
-              phoneNumber,
-              email,
-              avatar: convertedData,
-              avatar_type: avatar_image.rawFile.type,
-            });
+            console.log(
+              JSON.stringify({
+                member_id,
+                name,
+                phoneNumber,
+                email,
+                avatar_type: avatar_image.rawFile.type,
+              })
+            );
+            // options.body = JSON.stringify({
+            //   member_id,
+            //   name,
+            //   phoneNumber,
+            //   email,
+            //   avatar: convertedData,
+            //   avatar_type: avatar_image.rawFile.type,
+            // });
           } else {
             options.body = JSON.stringify(params.data);
           }

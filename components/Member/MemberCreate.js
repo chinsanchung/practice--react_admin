@@ -11,7 +11,13 @@ function MemberCreate(props) {
   return (
     <Create {...props}>
       <SimpleForm redirect="list">
-        <ImageInput source="avatar" label="아바타" accept="image/*">
+        <ImageInput
+          source="avatar"
+          label="아바타"
+          accept="image/*"
+          name="avatar"
+          encType="multipart/form-data"
+        >
           <ImageField source="src" title="title" />
         </ImageInput>
         <TextInput source="member_id" label="아이디" />
