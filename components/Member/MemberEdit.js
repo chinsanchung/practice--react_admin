@@ -16,7 +16,14 @@ function MemberEdit(props) {
     <Edit title={<MemberEditTitle />} {...props}>
       <SimpleForm>
         <TextInput disabled source="id" />
-        <ImageInput source="avatar" label="아바타" accept="image/*">
+        <ImageInput
+          type="file"
+          id="uploadImage"
+          name="image"
+          source="image"
+          label="아바타"
+          accept="image/*"
+        >
           <ImageField source="src" title="title" />
         </ImageInput>
         <TextInput source="member_id" label="아이디" />

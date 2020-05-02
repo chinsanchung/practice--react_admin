@@ -11,15 +11,6 @@ import {
   DELETE,
   DELETE_MANY,
 } from "react-admin";
-// import { convertFileToBase64 } from "../util/imageUtil";
-const convertFileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-
-    reader.readAsDataURL(file.rawFile);
-  });
 
 /**
  * Maps react-admin queries to a simple REST API
@@ -35,6 +26,14 @@ const convertFileToBase64 = (file) =>
  * DELETE       => DELETE http://my.api.url/posts/123
  */
 export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
+  const convertFileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+
+      reader.readAsDataURL(file.rawFile);
+    });
   /**
    * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
    * @param {String} resource Name of the resource to fetch, e.g. 'posts'
@@ -47,7 +46,6 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     const options = {};
     switch (type) {
       case GET_LIST: {
-        console.log("DataProvider_Request_GET_LIST");
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
@@ -56,6 +54,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
           filter: JSON.stringify(params.filter),
         };
         url = `${apiUrl}/${resource}?${stringify(query)}`;
+
         break;
       }
       case GET_ONE:
@@ -92,59 +91,62 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         console.log("DataProvider_Request_UPDATE");
         url = `${apiUrl}/${resource}/${params.id}`;
         options.method = "PUT";
-        options.body = JSON.stringify(params.data);
+        if (params.data.image) {
+          const convertedImage = await convertFileToBase64(params.data.image);
+          options.body = JSON.stringify({
+            ...params.data,
+            image: { src: convertedImage },
+          });
+        }
+
         console.log(params.data);
         break;
       case CREATE:
-        {
-          console.log("DataProvider_Request_CREATE");
-          url = `${apiUrl}/${resource}`;
-          options.method = "POST";
+        console.log("DataProvider_Request_CREATE");
+        url = `${apiUrl}/${resource}`;
+        options.method = "POST";
+        console.log("params.data: ", params.data);
 
-          if (params.data.avatar) {
-            const avatar_image = params.data.avatar;
-            const convertedData = await convertFileToBase64(avatar_image);
-            console.log(
-              JSON.stringify({
-                member_id,
-                name,
-                phoneNumber,
-                email,
-                avatar_type: avatar_image.rawFile.type,
-              })
-            );
-            // options.body = JSON.stringify({
-            //   member_id,
-            //   name,
-            //   phoneNumber,
-            //   email,
-            //   avatar: convertedData,
-            //   avatar_type: avatar_image.rawFile.type,
-            // });
-          } else {
-            options.body = JSON.stringify(params.data);
-          }
-          // CUSTOM:
-          // if (resource === "posts" || params.data.avatar) {
-          //   let newPictures = {};
-          //   let formerPictures = {};
-          //   Object.keys(params.data.avatar).forEach((item) => {
-          //     item === "rawFile"
-          //       ? (newPictures = {
-          //           ...newPictures,
-          //           [item]: params.data.avatar[item],
-          //         })
-          //       : (formerPictures = {
-          //           ...formerPictures,
-          //           [item]: params.data.avatar[item],
-          //         });
-          //   });
-          //   console.log("new", newPictures);
-          //   console.log("former", formerPictures);
-          // }
+        if (params.data.image) {
+          const convertedImage = await convertFileToBase64(params.data.image);
+          const convertedString = convertedImage.split(";base64,").pop();
+
+          options.body = JSON.stringify({
+            ...params.data,
+            image: { src: convertedImage },
+          });
+        } else if (params.data.file) {
+          const convertedFile = await convertFileToBase64(params.data.file);
+          options.body = JSON.stringify({
+            ...params.data,
+            file_name: params.data.file.rawFile.name,
+            src: convertedFile,
+            file_string: convertedString,
+          });
+        } else {
+          options.body = JSON.stringify(params.data);
         }
 
+        // CUSTOM:
+        /*if (resource === "posts" || params.data.avatar) {
+          let newPictures = {};
+          let formerPictures = {};
+          Object.keys(params.data.avatar).forEach((item) => {
+            item === "rawFile"
+              ? (newPictures = {
+                  ...newPictures,
+                  [item]: params.data.avatar[item],
+                })
+              : (formerPictures = {
+                  ...formerPictures,
+                  [item]: params.data.avatar[item],
+                });
+          });
+          console.log("new", newPictures);
+          console.log("former", formerPictures);
+        }*/
         break;
+
       case DELETE:
         url = `${apiUrl}/${resource}/${params.id}`;
         options.method = "DELETE";
@@ -236,11 +238,24 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
       }));
     }
 
-    const { url, options } = convertDataRequestToHTTP(type, resource, params);
-
-    return httpClient(url, options).then((response) => {
-      console.log(response);
-      return convertHTTPResponse(response, type, resource, params);
+    // const { url, options } = convertDataRequestToHTTP(type, resource, params);
+    // return httpClient(url, options).then((response) => {
+    //   console.log(response);
+    //   return convertHTTPResponse(response, type, resource, params);
+    // });
+    return new Promise((resolve) => {
+      convertDataRequestToHTTP(type, resource, params)
+        .then(({ url, options }) =>
+          httpClient(url, options).then((response) => {
+            console.log("convertDataRequestToHTTP return: ", response);
+            return resolve(
+              convertHTTPResponse(response, type, resource, params)
+            );
+          })
+        )
+        .catch((error) =>
+          console.log("convertDataRequestToHTTP error: ", error)
+        );
     });
   };
 };

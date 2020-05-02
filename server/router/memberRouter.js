@@ -7,13 +7,13 @@ import {
   DELETE,
   UPDATE,
 } from "../controllers/memberController";
-import { uploadAvatar } from "../middlewares";
+import { multerAvatar } from "../middlewares";
 
 const memberRouter = express.Router();
 
 memberRouter.get("", GET_LIST);
 memberRouter.get(`${routes.id_url}/show`, GET_ONE);
-memberRouter.post("", uploadAvatar, CREATE);
+memberRouter.post("", multerAvatar, CREATE);
 memberRouter.put(routes.id_url, UPDATE);
 memberRouter.delete(routes.id_url, DELETE);
 

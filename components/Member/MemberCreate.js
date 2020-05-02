@@ -33,6 +33,6 @@ export default MemberCreate;
 
 /*
 <ImageInput source="avatar" label="아바타" accept="image/*">
-          <ImageField source="src" title="title" />
+          <ImageField source="url" title="title" />
         </ImageInput>
 */
